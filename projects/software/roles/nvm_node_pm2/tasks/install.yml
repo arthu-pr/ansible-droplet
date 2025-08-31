@@ -11,15 +11,16 @@
   args:
     cmd: curl https://raw.githubusercontent.com/creationix/nvm/v0.7.0/install.sh | bash
     executable: /bin/bash
-    chdir: "{{ ansible_env.HOME }}"
-    creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
+    chdir: '{{ ansible_env.HOME }}'
+    creates: '{{ ansible_env.HOME }}/.nvm/nvm.sh'
 
 - name: Source NVM script and install Node.js
   ansible.builtin.shell: |
-    source ~/.nvm/nvm.sh &&
+    . {{ ansible_env.HOME }}/.nvm/nvm.sh &&
     nvm install --lts
   args:
     executable: /bin/bash
+  changed_when: false
 
 - name: Include task to find node path (before first npm task)
   ansible.builtin.include_tasks: find_current_npm_executable.yml
@@ -28,6 +29,6 @@
   community.general.npm:
     name: pm2
     global: true
-    executable: "{{ npm_path }}"
+    executable: '{{ npm_path }}'
   environment:
-    PATH: "{{ node_dir }}:{{ ansible_env.PATH }}"
+    PATH: '{{ node_dir }}:{{ ansible_env.PATH }}'

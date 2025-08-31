@@ -28,14 +28,14 @@
     sudo mv zellij /usr/local/bin/
   args:
     executable: /bin/bash
+    creates: /usr/local/bin/zellij
   become: true
 
-- name: Clean up
+- name: Clean up and verify installation
   ansible.builtin.shell: |
-    set -o pipefail
-    rm zellij-x86_64-unknown-linux-musl.tar.gz
-
-- name: Verify installation
-  ansible.builtin.shell: |
-    set -o pipefail
+    rm zellij-x86_64-unknown-linux-musl.tar.gz 
     zellij --version
+  args:
+    executable: /bin/bash
+  register: zellij_version_result
+  changed_when: false

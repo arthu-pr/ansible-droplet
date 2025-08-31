@@ -22,14 +22,15 @@
 - name: Build Neovim
   ansible.builtin.shell: |
     cd /home/{{ ansible_user_id }}/neovim &&
-    make CMAKE_BUILD_TYPE=Release
+    make CMAKE_BUILD_TYPE=RelWithDebInfo
   args:
     chdir: /home/{{ ansible_user_id }}/neovim
     # creates: /usr/local/bin/nvim
 
 - name: Install Neovim
   ansible.builtin.shell: |
-    cd build && cpack -G DEB && sudo dpkg -i nvim-linux64.deb
+    # cd build && cpack -G DEB && sudo dpkg -i nvim-linux-x86_64.deb
+    cd build && cpack -G DEB && sudo dpkg -i nvim-linux-x86_64.deb
   become: true
   args:
     chdir: /home/{{ ansible_user_id }}/neovim

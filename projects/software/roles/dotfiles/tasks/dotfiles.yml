@@ -1,0 +1,23 @@
+---
+- name: Clone personal config repo
+  ansible.builtin.git:
+    repo: https://github.com/arthur-plazanet/dotfiles
+    dest: '{{ ansible_env.HOME }}/config'
+    when: install | default(false)
+
+- name: Run script to set up symlinks
+  ansible.builtin.shell: |
+    cd "{{ ansible_env.HOME }}/config"
+    yes | ./set_symbolic_links.sh
+  args:
+    executable: /bin/bash
+  when: install | default(false)
+
+- name: Update config files
+  ansible.builtin.git:
+    repo: https://github.com/arthur-plazanet/dotfiles
+    dest: '{{ ansible_env.HOME }}/config'
+    when: update | default(false)
+  command: git pull
+  args:
+    chdir: '{{ ansible_env.HOME }}/config'

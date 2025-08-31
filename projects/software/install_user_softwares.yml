@@ -1,7 +1,7 @@
 ---
 - name: Install user softwares
   # https://stackoverflow.com/a/36361222/13172236
-  hosts: "{{ setupHosts }}"
+  hosts: '{{ setupHosts }}'
   vars:
     run_install: true
     run_upgrade: false
@@ -13,6 +13,7 @@
     - ansible.builtin.command: echo
   roles:
     - zsh
-    - nvm_node_pm2
+    # - nvm_node_pm2
+    - dotfiles
     - zellij
     - neovim

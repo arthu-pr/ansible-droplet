@@ -1,4 +1,9 @@
 ---
+- name: Check if NVM is already installed
+  ansible.builtin.stat:
+    path: /home/{{ ansible_user }}/.nvm/nvm.sh
+  register: nvm_check
+
 - name: Install NVM, Node, and PM2
   ansible.builtin.include_tasks: install.yml
-  when: run_install | default(false)
+  when: run_install | default(false) and not nvm_check.stat.exists
