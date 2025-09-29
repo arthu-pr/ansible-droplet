@@ -12,7 +12,7 @@
   ansible.builtin.shell: |
     set -o pipefail
     mpstat 1 1 | awk '/Average:/ {print 100 - $NF}'
-  register: cpu_usage
+  register: monitoring_cpu_usage
   args:
     executable: /bin/bash
   changed_when: false
@@ -21,7 +21,7 @@
   ansible.builtin.shell: |
     set -o pipefail
     free -m | awk '/Mem/ {printf "%.2f", ($3/$2)*100}'
-  register: ram_usage
+  register: monitoring_ram_usage
   args:
     executable: /bin/bash
   changed_when: false
@@ -30,7 +30,7 @@
   ansible.builtin.shell: |
     set -o pipefail
     ps aux --sort=-%mem | awk 'NR<=6{print $1, $2, $3, $4, $11}'
-  register: memory_top_processes
+  register: monitoring_memory_top_processes
   args:
     executable: /bin/bash
   changed_when: false
@@ -39,7 +39,7 @@
   ansible.builtin.shell: |
     set -o pipefail
     df -h / | awk 'NR==2 {print $5}'
-  register: disk_space
+  register: monitoring_disk_space
   args:
     executable: /bin/bash
   changed_when: false
@@ -48,7 +48,7 @@
   ansible.builtin.shell: |
     set -o pipefail
     set -o pipefail && uptime | awk -F'[a-z]:' '{print $2}'
-  register: load_average
+  register: monitoring_load_average
   args:
     executable: /bin/bash
   changed_when: false
@@ -57,7 +57,7 @@
   ansible.builtin.shell: |
     set -o pipefail
     free -m | awk '/Swap/ {printf "%.2f", ($3/$2)*100}'
-  register: swap_usage
+  register: monitoring_swap_usage
   args:
     executable: /bin/bash
   ignore_errors: true
@@ -67,7 +67,7 @@
   ansible.builtin.shell: |
     set -o pipefail
     swapon --show | tail -n +2
-  register: swap_usage
+  register: monitoring_swap_usage_2
   args:
     executable: /bin/bash
   changed_when: false
@@ -81,11 +81,11 @@
   ansible.builtin.debug:
     msg:
       - 'Executed On: {{ ansible_date_time.date }} {{ ansible_date_time.hour }}:{{ ansible_date_time.minute }}'
-      - 'CPU Usage: {{ cpu_usage.stdout }}%'
-      - 'RAM Usage: {{ ram_usage.stdout }}%'
-      - 'Disk Space Used: {{ disk_space.stdout }}'
-      - 'Load Average: {{ load_average.stdout }}'
-      - 'Swap Usage: {{ swap_usage.stdout }}%'
+      - 'CPU Usage: {{ monitoring_cpu_usage.stdout }}%'
+      - 'RAM Usage: {{ monitoring_ram_usage.stdout }}%'
+      - 'Disk Space Used: {{ monitoring_disk_space.stdout }}'
+      - 'Load Average: {{ monitoring_load_average.stdout }}'
+      - 'Swap Usage: {{ monitoring_swap_usage.stdout }}%'
       - 'Top 5 Memory-Consuming Processes:'
-      - '{{ memory_top_processes.stdout_lines }}'
+      - '{{ monitoring_memory_top_processes.stdout_lines }}'
   changed_when: false
