@@ -70,10 +70,12 @@
   register: swap_usage
   args:
     executable: /bin/bash
+  changed_when: false
 
 - name: Display swap usage
   ansible.builtin.debug:
     msg: '{{ swap_usage.stdout_lines }}'
+  changed_when: false
 
 - name: Display System Metrics
   ansible.builtin.debug:
@@ -86,3 +88,4 @@
       - 'Swap Usage: {{ swap_usage.stdout }}%'
       - 'Top 5 Memory-Consuming Processes:'
       - '{{ memory_top_processes.stdout_lines }}'
+  changed_when: false

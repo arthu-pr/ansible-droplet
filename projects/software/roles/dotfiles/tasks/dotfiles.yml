@@ -21,3 +21,4 @@
   command: git pull
   args:
     chdir: '{{ ansible_env.HOME }}/config'
+  when: update | default(false)

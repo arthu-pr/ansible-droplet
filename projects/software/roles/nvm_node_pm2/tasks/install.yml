@@ -13,6 +13,7 @@
     executable: /bin/bash
     chdir: '{{ ansible_env.HOME }}'
     creates: '{{ ansible_env.HOME }}/.nvm/nvm.sh'
+  changed_when: false
 
 - name: Source NVM script and install Node.js
   ansible.builtin.shell: |
@@ -32,3 +33,4 @@
     executable: '{{ npm_path }}'
   environment:
     PATH: '{{ node_dir }}:{{ ansible_env.PATH }}'
+  changed_when: false

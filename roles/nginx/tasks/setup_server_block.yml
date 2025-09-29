@@ -56,6 +56,7 @@
   become: true
   # Continue if fails as often breakings
   ignore_errors: true
+  changed_when: "'Congratulations' in certbot_result.stdout"
 
 - name: Create index.html
   ansible.builtin.copy:
@@ -74,3 +75,4 @@
 - name: Test Nginx configuration
   ansible.builtin.command: nginx -t
   notify: Restart nginx
+  changed_when: false

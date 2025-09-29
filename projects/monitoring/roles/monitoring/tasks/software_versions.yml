@@ -44,7 +44,7 @@
 - name: Display gathered versions
   ansible.builtin.debug:
     msg:
-      - 'Executed On: {{ ansible_date_time.date }} {{ ansible_date_time.hour }}:{{ ansible_date_time.minute }}'
+      - "Executed On: {{ ansible_date_time.date }} {{ ansible_date_time.hour }}:{{ ansible_date_time.minute }}"
       - "Node.js Version: {% if node_version.stdout is defined and node_version.stdout != '' %}{{ node_version.stdout }}{% else %}Not Installed{% endif %}"
       - "NVM Version: {% if nvm_version.stdout is defined and nvm_version.stdout != '' %}{{ nvm_version.stdout }}{% else %}Not Installed{% endif %}"
       - "PM2 Version: {% if pm2_version.stdout is defined and pm2_version.stdout != '' %}{{ pm2_version.stdout }}{% else %}Not Installed{% endif %}"

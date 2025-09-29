@@ -2,7 +2,7 @@
 # https://github.com/spinupwp/wordpress-ansible
 - name: Ubuntu Server Setup
   # https://stackoverflow.com/a/36361222/13172236
-  hosts: '{{ setupHosts }}'
+  hosts: "{{ setupHosts }}"
   vars_prompt:
     - name: setupHosts
       prompt: Which hosts would you like to use?
@@ -13,8 +13,8 @@
   # become_user: root
   become: true
   vars:
-    username: '{{ username }}'
-    password: '{{ password }}'
+    username: "{{ username }}"
+    password: "{{ password }}"
     run_install: true
     run_setup: false
   roles:
