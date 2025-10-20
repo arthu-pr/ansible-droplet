@@ -27,9 +27,9 @@
   args:
     chdir: /home/{{ ansible_user_id }}/neovim
   # Lint
-  register: build_result
+  register: neovim_build_result
   changed_when:
-    build_result.rc != 0
+    neovim_build_result.rc != 0
     # creates: /usr/local/bin/nvim
 
 - name: Install Neovim
@@ -40,7 +40,7 @@
   args:
     chdir: /home/{{ ansible_user_id }}/neovim
   # Lint
-  register: install_result
+  register: neovim_install_result
   changed_when:
-    install_result.rc != 0
+    neovim_install_result.rc != 0
     # creates: /usr/local/bin/nvim

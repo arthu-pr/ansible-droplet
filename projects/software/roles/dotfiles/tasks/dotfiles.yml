@@ -10,15 +10,15 @@
   ansible.builtin.shell: |
     cd "{{ ansible_env.HOME }}/config"
     { printf '\n'; printf '\n'; yes y; } | bash ./set_symbolic_links.sh
-  register: setup_script_result
-  changed_when: false
+  register: dotfiles_setup_script_result
+  changed_when: dotfiles_setup_script_result.rc != 0
   args:
     executable: /bin/bash
 
 - name: Debug setup script output
   ansible.builtin.debug:
-    msg: '{{ setup_script_result.stdout_lines }}'
-  when: setup_script_result.stdout is defined
+    msg: '{{ dotfiles_setup_script_result.stdout_lines }}'
+  when: dotfiles_setup_script_result.stdout is defined
 
 - name: Update config files
   ansible.builtin.git:

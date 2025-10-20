@@ -19,12 +19,12 @@
 
 - name: Set node path fact
   ansible.builtin.set_fact:
-    node_path: '{{ node_path_result.stdout | trim }}'
+    nvm_node_pm2_node_path: '{{ node_path_result.stdout | trim }}'
 
 - name: Set node directory fact
   ansible.builtin.set_fact:
-    node_dir: '{{ node_path | dirname }}'
+    nvm_node_pm2_node_dir: '{{ node_path | dirname }}'
 
 - name: Set npm path fact
   ansible.builtin.set_fact:
-    npm_path: '{{ node_dir }}/npm'
+    nvm_node_pm2_npm_path: '{{ node_dir }}/npm'
