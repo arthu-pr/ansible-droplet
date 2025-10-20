@@ -7,7 +7,7 @@
   ansible.builtin.shell: |
     source ~/.nvm/nvm.sh &&
     nvm which node
-  register: node_path_result
+  register: nvm_node_pm2_node_path_result
   changed_when: node_path_result.rc != 0
   args:
     executable: /bin/bash

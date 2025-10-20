@@ -1,26 +1,26 @@
 ---
 - name: Gather Node.js version
   ansible.builtin.command: node -v
-  register: node_version
+  register: monitoring_node_version
   changed_when: node_version.rc != 0
   failed_when: false
 
 - name: Ensure NVM is sourced
   ansible.builtin.shell: zsh -c '[ -d ~/.zprezto ] && source ~/.zprezto/init.zsh; source ~/.nvm/nvm.sh && nvm --version'
-  register: nvm_version
+  register: monitoring_nvm_version
   changed_when: nvm_version.rc != 0
   failed_when: false
 
 - name: Gather PM2 version with Zprezto
   ansible.builtin.shell: zsh -c '[ -d ~/.zprezto ] && source ~/.zprezto/init.zsh || source ~/.oh-my-zsh/oh-my-zsh.sh && pm2 --version'
-  register: pm2_version
+  register: monitoring_pm2_version
   changed_when: pm2_version.rc != 0
   # become: true
   failed_when: false
 
 - name: Gather PHP version
   ansible.builtin.command: php -v | head -n 1
-  register: php_version
+  register: monitoring_php_version
   changed_when: php_version.rc != 0
   failed_when: false
 
