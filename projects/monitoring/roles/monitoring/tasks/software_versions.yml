@@ -2,47 +2,47 @@
 - name: Gather Node.js version
   ansible.builtin.command: node -v
   register: monitoring_node_version
-  changed_when: node_version.rc != 0
+  changed_when: monitoring_node_version.rc != 0
   failed_when: false
 
 - name: Ensure NVM is sourced
   ansible.builtin.shell: zsh -c '[ -d ~/.zprezto ] && source ~/.zprezto/init.zsh; source ~/.nvm/nvm.sh && nvm --version'
   register: monitoring_nvm_version
-  changed_when: nvm_version.rc != 0
+  changed_when: monitoring_nvm_version.rc != 0
   failed_when: false
 
 - name: Gather PM2 version with Zprezto
   ansible.builtin.shell: zsh -c '[ -d ~/.zprezto ] && source ~/.zprezto/init.zsh || source ~/.oh-my-zsh/oh-my-zsh.sh && pm2 --version'
   register: monitoring_pm2_version
-  changed_when: pm2_version.rc != 0
+  changed_when: monitoring_pm2_version.rc != 0
   # become: true
   failed_when: false
 
 - name: Gather PHP version
   ansible.builtin.command: php -v | head -n 1
   register: monitoring_php_version
-  changed_when: php_version.rc != 0
+  changed_when: monitoring_php_version.rc != 0
   failed_when: false
 
 - name: Check if Node.js is installed
   ansible.builtin.debug:
     msg: Node.js not installed
-  when: node_version.stdout is undefined or node_version.stdout == ''
+  when: monitoring_node_version.stdout is undefined or monitoring_node_version.stdout == ''
 
 - name: Check if NVM is installed
   ansible.builtin.debug:
     msg: NVM not installed
-  when: nvm_version.stdout is undefined or nvm_version.stdout == ''
+  when: monitoring_nvm_version.stdout is undefined or monitoring_nvm_version.stdout == ''
 
 - name: Check if PM2 is installed
   ansible.builtin.debug:
     msg: PM2 not installed
-  when: pm2_version.stdout is undefined or pm2_version.stdout == ''
+  when: monitoring_pm2_version.stdout is undefined or monitoring_pm2_version.stdout == ''
 
 - name: Check if PHP is installed
   ansible.builtin.debug:
     msg: PHP not installed
-  when: php_version.stdout is undefined or php_version.stdout == ''
+  when: monitoring_php_version.stdout is undefined or monitoring_php_version.stdout == ''
 
 - name: Display gathered versions
   ansible.builtin.debug:
