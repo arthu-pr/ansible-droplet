@@ -71,6 +71,7 @@
           <h2>Hello Learning day, if you see this then my "presentation" went well!</h2>
       </body>
       </html>
+  owner: '{{ ansible_user }}'
 
 - name: Test Nginx configuration
   ansible.builtin.command: nginx -t

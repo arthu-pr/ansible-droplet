@@ -1,19 +1,17 @@
 ---
 - name: Install user softwares
   # https://stackoverflow.com/a/36361222/13172236
-  hosts: "{{ setupHosts }}"
+  hosts: '{{ setupHosts }}'
   vars:
     run_install: true
-    run_upgrade: false
+    run_update: false
   vars_prompt:
     - name: setupHosts
       prompt: Which hosts would you like to use?
       private: false
-  tasks:
-    - ansible.builtin.command: echo
   roles:
     - zsh
-    # - nvm_node_pm2
+    - nvm_node_pm2
     - dotfiles
     - zellij
     - neovim

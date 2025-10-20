@@ -25,20 +25,9 @@
     autoclean: true
   become: true
 
+  # TODO: Move to separate role and add proper checks / debugging
 - name: Distribution
-  ansible.builtin.debug:
-    msg: '"{{ ansible_distribution }}"'
-    changed_when: false
-
-- name: Distribution version
-  ansible.builtin.debug:
-    msg: '"{{ ansible_distribution_version }}"'
-    changed_when: false
-
-- name: Distribution major version
-  ansible.builtin.debug:
-    msg: '"{{ ansible_distribution_major_version }}"'
-    changed_when: false
+  ansible.builtin.import_tasks: distribution.yml
 
 - name: Resurrect pm2 after reboot if pm2 is installed
   ansible.builtin.shell: pm2 resurrect

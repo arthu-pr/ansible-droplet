@@ -21,6 +21,8 @@
     tar -xzf zellij-x86_64-unknown-linux-musl.tar.gz
   args:
     executable: /bin/bash
+  register: extract_result
+  changed_when: extract_result.rc != 0
 
 - name: Move the binary to /usr/local/bin
   ansible.builtin.shell: |
@@ -38,4 +40,9 @@
   args:
     executable: /bin/bash
   register: zellij_version_result
-  changed_when: false
+  changed_when: zellij_version_result.rc != 0
+
+- name: Display Zellij version
+  ansible.builtin.debug:
+    msg: 'Zellij version installed: {{ zellij_version_result.stdout }}'
+  when: zellij_version_result.stdout is defined

@@ -2,21 +2,54 @@
 # https://github.com/spinupwp/wordpress-ansible
 - name: Ubuntu Server Setup
   # https://stackoverflow.com/a/36361222/13172236
-  hosts: "{{ setupHosts }}"
+  hosts: '{{ setupHosts }}'
+  become: true
+
   vars_prompt:
     - name: setupHosts
       prompt: Which hosts would you like to use?
       private: false
+
+    # ──────────────────────────────────────────────────────────────
+    # VARIABLES
+    # ──────────────────────────────────────────────────────────────
+    # You can define these variables in different ways:
+    #
+    # 1. Interactive prompts (default, asks when playbook runs) - will not be asked if defined elsewhere
+    # 2. From an external vars file (e.g. vars/secrets.yml)
+    # 3. From environment variables (e.g. for CI/CD)
+    #
+    # To use an external vars file instead of prompts, replace
+    #   vars_prompt → vars_files:
+    #
+    #   vars_files:
+    #     - vars/secrets.yml
+    #
+    # And optionally encrypt that file with `ansible-vault encrypt vars/secrets.yml`
+    #
+    # To use environment variables:
+    #   username: "{{ lookup('env', 'ANSIBLE_USER') | default('admin') }}"
+    #   password: "{{ lookup('env', 'ANSIBLE_PASSWORD') | default('changeme') }}"
+    # ──────────────────────────────────────────────────────────────
+    - name: username
+      prompt: 'Enter the username for the new user'
+      private: false
+
+    - name: password
+      prompt: 'Enter the password for the new user'
+      private: true
+
+  vars:
+    username: '{{ username }}'
+    password: '{{ password }}'
+    run_install: true
+    run_setup: false
+
   # Important as for a first install we will shh into the server as root
   #  which will be deactivated after the first run
   # become_user: {{ username | default('root') }}
   # become_user: root
-  become: true
-  vars:
-    username: "{{ username }}"
-    password: "{{ password }}"
-    run_install: true
-    run_setup: false
+
   roles:
     - common
     - ufw

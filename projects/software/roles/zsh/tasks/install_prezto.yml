@@ -16,6 +16,7 @@
   ansible.builtin.git:
     repo: https://github.com/sorin-ionescu/prezto.git
     dest: /home/{{ ansible_user_id }}/.zprezto
+    version: master
 
 - name: Add symbolic link dotfiles
   ansible.builtin.shell: |
@@ -26,9 +27,13 @@
   args:
     executable: /bin/zsh
   ignore_errors: true
+  owner: '{{ ansible_user_id }}'
+  # Lint
+  register: symlink_result
+  changed_when: symlink_result.rc != 0
 
 - name: Set .zshrc
   ansible.builtin.template:
     src: .zshrc.j2
     dest: /home/{{ ansible_user_id }}/.zshrc
-    owner: "{{ ansible_user_id }}"
+    owner: '{{ ansible_user_id }}'
