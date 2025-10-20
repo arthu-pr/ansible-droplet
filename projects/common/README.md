@@ -2,7 +2,11 @@
 
 ## Setup Nginx Server Block
 
-This project is meant to automate the registration of a new domain on a server, with the default configuration on Nginx and Let's Encrypt SSL certificate (TODO: can be buggy sometimes).
+This project is meant to automate the registration of a new domain on a server, with the default configuration on Nginx and Let's Encrypt SSL certificate.
+
+> [!NOTE]
+> If running Certbot for the first time, you will need to enter an email address and accept the terms of service.
+> See https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-20-04
 
 ### Requirements
 
