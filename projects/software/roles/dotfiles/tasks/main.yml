@@ -1,0 +1,4 @@
+---
+- name: Clone personal dotfiles repository and set up symlinks
+  ansible.builtin.include_tasks: dotfiles.yml
+  when: run_install | default(false)

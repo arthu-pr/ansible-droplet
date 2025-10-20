@@ -1,7 +1,7 @@
 ---
 - name: Update packages and reboot if required
   # https://stackoverflow.com/a/36361222/13172236
-  hosts: '{{ setupHosts }}'
+  hosts: "{{ setupHosts }}"
   vars_prompt:
     - name: setupHosts
       prompt: Which hosts would you like to use?

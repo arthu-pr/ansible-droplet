@@ -1,48 +1,51 @@
 ---
 - name: Gather Node.js version
-  command: node -v
-  register: node_version
+  ansible.builtin.command: node -v
+  register: monitoring_node_version
+  changed_when: node_version.rc != 0
   failed_when: false
 
 - name: Ensure NVM is sourced
-  shell: zsh -c '[ -d ~/.zprezto ] && source ~/.zprezto/init.zsh; source ~/.nvm/nvm.sh && nvm --version'
-  register: nvm_version
+  ansible.builtin.shell: zsh -c '[ -d ~/.zprezto ] && source ~/.zprezto/init.zsh; source ~/.nvm/nvm.sh && nvm --version'
+  register: monitoring_nvm_version
+  changed_when: nvm_version.rc != 0
   failed_when: false
 
 - name: Gather PM2 version with Zprezto
-  shell: zsh -c '[ -d ~/.zprezto ] && source ~/.zprezto/init.zsh || source ~/.oh-my-zsh/oh-my-zsh.sh && pm2 --version'
-  register: pm2_version
+  ansible.builtin.shell: zsh -c '[ -d ~/.zprezto ] && source ~/.zprezto/init.zsh || source ~/.oh-my-zsh/oh-my-zsh.sh && pm2 --version'
+  register: monitoring_pm2_version
+  changed_when: pm2_version.rc != 0
   # become: true
   failed_when: false
 
 - name: Gather PHP version
-  command: php -v | head -n 1
-  register: php_version
-  become: true
+  ansible.builtin.command: php -v | head -n 1
+  register: monitoring_php_version
+  changed_when: php_version.rc != 0
   failed_when: false
 
 - name: Check if Node.js is installed
-  debug:
+  ansible.builtin.debug:
     msg: Node.js not installed
   when: node_version.stdout is undefined or node_version.stdout == ''
 
 - name: Check if NVM is installed
-  debug:
+  ansible.builtin.debug:
     msg: NVM not installed
   when: nvm_version.stdout is undefined or nvm_version.stdout == ''
 
 - name: Check if PM2 is installed
-  debug:
+  ansible.builtin.debug:
     msg: PM2 not installed
   when: pm2_version.stdout is undefined or pm2_version.stdout == ''
 
 - name: Check if PHP is installed
-  debug:
+  ansible.builtin.debug:
     msg: PHP not installed
   when: php_version.stdout is undefined or php_version.stdout == ''
 
 - name: Display gathered versions
-  debug:
+  ansible.builtin.debug:
     msg:
       - 'Executed On: {{ ansible_date_time.date }} {{ ansible_date_time.hour }}:{{ ansible_date_time.minute }}'
       - "Node.js Version: {% if node_version.stdout is defined and node_version.stdout != '' %}{{ node_version.stdout }}{% else %}Not Installed{% endif %}"

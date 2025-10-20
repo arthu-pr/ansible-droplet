@@ -13,13 +13,17 @@
     executable: /bin/bash
     chdir: '{{ ansible_env.HOME }}'
     creates: '{{ ansible_env.HOME }}/.nvm/nvm.sh'
+  register: nvm_node_pm2_nvm_install_result
+  changed_when: nvm_node_pm2_nvm_install_result.rc != 0
 
 - name: Source NVM script and install Node.js
   ansible.builtin.shell: |
-    source ~/.nvm/nvm.sh &&
+    . {{ ansible_env.HOME }}/.nvm/nvm.sh &&
     nvm install --lts
   args:
     executable: /bin/bash
+  register: nvm_node_pm2_nvm_source_result
+  changed_when: nvm_node_pm2_nvm_source_result.rc != 0
 
 - name: Include task to find node path (before first npm task)
   ansible.builtin.include_tasks: find_current_npm_executable.yml
@@ -31,3 +35,4 @@
     executable: '{{ npm_path }}'
   environment:
     PATH: '{{ node_dir }}:{{ ansible_env.PATH }}'
+  changed_when: false

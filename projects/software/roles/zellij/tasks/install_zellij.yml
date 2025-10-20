@@ -6,27 +6,43 @@
 
 ---
 - name: Fetch the latest Zellij release
-  ansible.builtin.shell: >
+  ansible.builtin.shell: |
+    set -o pipefail
     curl -s https://api.github.com/repos/zellij-org/zellij/releases/latest |
     grep "browser_download_url.*x86_64-unknown-linux-musl.tar.gz" |
     cut -d '"' -f 4 |
     wget -i -
+  args:
+    executable: /bin/bash
+
 - name: Extract the archive
   ansible.builtin.shell: |
+    set -o pipefail
     tar -xzf zellij-x86_64-unknown-linux-musl.tar.gz
   args:
     executable: /bin/bash
+  register: extract_result
+  changed_when: extract_result.rc != 0
 
 - name: Move the binary to /usr/local/bin
   ansible.builtin.shell: |
+    set -o pipefail
     sudo mv zellij /usr/local/bin/
   args:
     executable: /bin/bash
+    creates: /usr/local/bin/zellij
   become: true
 
-- name: Clean up
+- name: Clean up and verify installation
   ansible.builtin.shell: |
-    rm zellij-x86_64-unknown-linux-musl.tar.gz
-- name: Verify installation
-  ansible.builtin.shell: |
+    rm zellij-x86_64-unknown-linux-musl.tar.gz 
     zellij --version
+  args:
+    executable: /bin/bash
+  register: zellij_version_result
+  changed_when: zellij_version_result.rc != 0
+
+- name: Display Zellij version
+  ansible.builtin.debug:
+    msg: 'Zellij version installed: {{ zellij_version_result.stdout }}'
+  when: zellij_version_result.stdout is defined

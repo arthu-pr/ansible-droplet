@@ -1,0 +1,5 @@
+---
+- name: Recursively remove /var/cache/* directory contents
+  ansible.builtin.file:
+    path: /var/cache/*
+    state: absent

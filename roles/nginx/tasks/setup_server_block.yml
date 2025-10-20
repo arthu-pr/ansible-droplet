@@ -29,6 +29,7 @@
 - name: Test Nginx configuration
   ansible.builtin.command: nginx -t
   notify: Restart nginx
+  changed_when: false
 
 - name: Obtain SSL certificate with Certbot
   ansible.builtin.apt:
@@ -55,6 +56,7 @@
   become: true
   # Continue if fails as often breakings
   ignore_errors: true
+  changed_when: "'Congratulations' in certbot_result.stdout"
 
 - name: Create index.html
   ansible.builtin.copy:
@@ -69,7 +71,9 @@
           <h2>Hello Learning day, if you see this then my "presentation" went well!</h2>
       </body>
       </html>
+  owner: '{{ ansible_user }}'
 
 - name: Test Nginx configuration
   ansible.builtin.command: nginx -t
   notify: Restart nginx
+  changed_when: false

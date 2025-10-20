@@ -6,6 +6,9 @@
     cache_valid_time: 300
   become: true
 
+- name: Remove local cache
+  ansible.builtin.import_tasks: remove_cache.yml
+
 - name: Check if reboot required
   ansible.builtin.stat:
     path: /var/run/reboot-required
@@ -22,8 +25,13 @@
     autoclean: true
   become: true
 
+  # TODO: Move to separate role and add proper checks / debugging
+- name: Distribution
+  ansible.builtin.import_tasks: distribution.yml
+
 - name: Resurrect pm2 after reboot if pm2 is installed
   ansible.builtin.shell: pm2 resurrect
   args:
     executable: /bin/zsh
   when: reboot_required_file.stat.exists and ansible_local.pm2 is defined
+  changed_when: false

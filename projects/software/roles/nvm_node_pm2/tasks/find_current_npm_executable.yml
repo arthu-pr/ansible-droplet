@@ -7,7 +7,8 @@
   ansible.builtin.shell: |
     source ~/.nvm/nvm.sh &&
     nvm which node
-  register: node_path_result
+  register: nvm_node_pm2_node_path_result
+  changed_when: node_path_result.rc != 0
   args:
     executable: /bin/bash
 
@@ -18,12 +19,12 @@
 
 - name: Set node path fact
   ansible.builtin.set_fact:
-    node_path: "{{ node_path_result.stdout | trim }}"
+    node_path: '{{ node_path_result.stdout | trim }}'
 
 - name: Set node directory fact
   ansible.builtin.set_fact:
-    node_dir: "{{ node_path | dirname }}"
+    node_dir: '{{ node_path | dirname }}'
 
 - name: Set npm path fact
   ansible.builtin.set_fact:
-    npm_path: "{{ node_dir }}/npm"
+    npm_path: '{{ node_dir }}/npm'
