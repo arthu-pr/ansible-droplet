@@ -36,17 +36,20 @@ Runs `apt` upgrade/autoremove on each host and reboots it if the upgrade left a
 
 ### Requirements
 
-Outside this repo (never committed — see root [CLAUDE.md](../../CLAUDE.md)):
+These live outside the repo and are never committed:
 
-- `~/.ansible/hosts.yml` — real inventory. Each host needs `ansible_become_password:
-  "{{ vault_<host>_become_password }}"`.
-- `~/.ansible/secrets.yml` — vault-encrypted, holds the `vault_<host>_become_password`
-  vars referenced above:
+- **Inventory** (e.g. `~/.ansible/hosts.yml`). If your hosts need a sudo password,
+  give each one `ansible_become_password: "{{ vault_<host>_become_password }}"`.
+- **`secrets.yml`** — vault-encrypted, holding the `vault_*_become_password` vars
+  referenced above:
   ```bash
   ansible-vault create ~/.ansible/secrets.yml --vault-password-file ~/.ansible/vault_pass_file
   ```
-- `~/.ansible/vault_pass_file` — passphrase that decrypts `secrets.yml` (needed so the
-  cron job doesn't have to prompt for one).
+- **`vault_pass_file`** — the passphrase that decrypts `secrets.yml`, so an unattended
+  run never has to prompt for one.
+
+The vault files are only needed if your hosts require a become password — passwordless
+sudo works without them.
 
 ### Manual run
 
@@ -54,16 +57,36 @@ Outside this repo (never committed — see root [CLAUDE.md](../../CLAUDE.md)):
 ansible-playbook -i ~/.ansible/hosts.yml -e "@~/.ansible/secrets.yml" --vault-password-file ~/.ansible/vault_pass_file projects/common/update_reboot_check.yml
 ```
 
-Prompts for which host(s) to target (`vars_prompt`), e.g. `play`, `compose`, or the
-`servers` group for both.
+Prompts for which host(s) to target (`vars_prompt`) — a single host, or a group name to
+do several at once.
 
 ### Scheduled run
 
-[`run_update_reboot_check.sh`](run_update_reboot_check.sh) wraps the same command for
-both hosts (`setupHosts=servers`, no prompt) and appends output to
-`~/.ansible/logs/update_reboot_check.log`. It's invoked daily via the user's crontab
-(not tracked in this repo — set up with `crontab -e`):
+[`run_update_reboot_check.sh`](run_update_reboot_check.sh) runs the same playbook with no
+prompt and appends to a log. Every path is overridable, so it works outside the author's
+setup:
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `ANSIBLE_HOSTS_FILE` | `~/.ansible/hosts.yml` | Inventory |
+| `ANSIBLE_SECRETS_FILE` | `~/.ansible/secrets.yml` | Vault-encrypted extra vars (skipped if absent) |
+| `ANSIBLE_VAULT_PASS_FILE` | `~/.ansible/vault_pass_file` | Vault password file (skipped if absent) |
+| `TARGET_HOSTS` | `all` | Host or group to target |
+| `RUN_TIMEOUT` | `30m` | Hard limit; a hung run is logged as `TIMED OUT` rather than blocking forever |
+| `LOG_FILE` | `~/.ansible/logs/update_reboot_check.log` | Append target |
+
+Invoke it from cron (`crontab -e`) or a systemd timer:
 
 ```cron
 0 16 * * * /path/to/ansible-droplet/projects/common/run_update_reboot_check.sh
 ```
+
+To pin it to one group instead of the whole inventory:
+
+```cron
+0 16 * * * TARGET_HOSTS=servers /path/to/ansible-droplet/projects/common/run_update_reboot_check.sh
+```
+
+Unattended runs authenticate without an `ssh-agent`, so the inventory must point at a
+private key file (`ansible_ssh_private_key_file`) — an agent-only key works interactively
+but fails under cron with `Permission denied (publickey)`.
