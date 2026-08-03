@@ -1,10 +1,8 @@
-# Personal Ansible Projects
+# Ansible Droplets
 
 This repository contains some personal Ansible projects that I use and update regularly.
 
 It's meant to be re-usable and easy to understand.
-
-I decided to make it public after seeing many sources that really helped me getting into Ansible and to get feedback on how to improve it.
 
 ## Current projects
 
@@ -24,9 +22,6 @@ This is my personal configuration (mostly Digital Ocean Ubuntu droplets).
 It is Debian/Ubuntu oriented and the software I use might not be the same as yours.
 
 ## Directory structure
-
-I use a directory structure based on different projects and environments (but you don't need to have). Each project has its own playbooks, in addition of main common roles usable in every project.
-Example:
 
 ```graphql
 inventories/
@@ -74,4 +69,4 @@ ansible-playbook -i ~/.ansible/hosts.yml -e @secrets.yml --ask-vault-pass -K ubu
 
 ### Helpful links:
 
-- This answer on [Stack Overflow](https://stackoverflow.com/a/36361222/13172236) from [buzut](https://stackoverflow.com/users/1717735/buzut) / [kevin-c](https://stackoverflow.com/users/4834431/kevin-c) - which let you decide interactively on which host you want to run a playbook. I really like this trick
+- [Stack Overflow](https://stackoverflow.com/a/36361222/13172236) from [buzut](https://stackoverflow.com/users/1717735/buzut) / [kevin-c](https://stackoverflow.com/users/4834431/kevin-c) - prompt which let you decide interactively on which host you want to run a playbook.
