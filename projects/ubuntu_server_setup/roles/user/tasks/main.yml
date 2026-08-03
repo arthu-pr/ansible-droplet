@@ -20,13 +20,17 @@
     shell: /bin/bash
     update_password: always
     state: present
+  register: created_user
 
 - name: Add authorized key
   ansible.posix.authorized_key:
     user: '{{ username }}'
     key: "{{ lookup('file', ansible_ssh_public_key) }}"
 
+# Path must be absolute: these tasks run under `become: true`, so a leading
+# `~` would expand to root's home and drop the key in /root/.ssh instead.
 - name: Generate SSH key
   community.crypto.openssh_keypair:
+    path: '{{ created_user.home }}/.ssh/id_ssh_rsa'
     owner: '{{ username }}'
-    path: ~/.ssh/id_ssh_rsa
+    group: '{{ username }}'

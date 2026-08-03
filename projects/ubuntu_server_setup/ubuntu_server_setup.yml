@@ -40,8 +40,6 @@
       private: true
 
   vars:
-    username: '{{ username }}'
-    password: '{{ password }}'
     run_install: true
     run_setup: false
 
