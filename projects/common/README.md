@@ -29,6 +29,11 @@ Which hosts would you like to use?: test
 What is the domain name?: test-ansible.de
 ```
 
+It then prompts for `server_block_mode` (default `static`, just hit enter for the original
+static-file behaviour) and `proxy_port`. Answering `proxy` instead reverse-proxies the domain
+to `http://127.0.0.1:<proxy_port>` rather than serving `/var/www/<domain>` — for an app that
+listens on its own port and should never be bound to `0.0.0.0` directly (e.g. `pm2-dashboard`).
+
 ## Update packages and reboot if required
 
 Runs `apt` upgrade/autoremove on each host and reboots it if the upgrade left a

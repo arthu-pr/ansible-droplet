@@ -13,10 +13,11 @@
     group: '{{ ansible_user }}'
     mode: '0755'
     recurse: true
+  when: server_block_mode | default('static') == 'static'
 
 - name: Create server block config file from template
   ansible.builtin.template:
-    src: nginx_server_block.j2
+    src: "{{ 'nginx_reverse_proxy_block.j2' if server_block_mode | default('static') == 'proxy' else 'nginx_server_block.j2' }}"
     dest: /etc/nginx/sites-available/{{ domain }}
     mode: '0644'
 
@@ -72,6 +73,7 @@
       </body>
       </html>
   owner: '{{ ansible_user }}'
+  when: server_block_mode | default('static') == 'static'
 
 - name: Test Nginx configuration
   ansible.builtin.command: nginx -t

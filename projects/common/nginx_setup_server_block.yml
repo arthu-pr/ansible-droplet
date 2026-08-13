@@ -17,6 +17,20 @@
     - name: domain
       prompt: What is the domain name?
       private: false
+
+    # 'static' serves /var/www/<domain> (the original behaviour, unchanged
+    # by default). 'proxy' instead reverse-proxies to a local app — use this
+    # for something like the pm2-dashboard app, which listens on its own
+    # port and should never be bound to 0.0.0.0 directly.
+    - name: server_block_mode
+      prompt: Server block mode? (static/proxy)
+      default: static
+      private: false
+
+    - name: proxy_port
+      prompt: 'Upstream port to proxy to on 127.0.0.1 (only used when mode=proxy)'
+      default: '3000'
+      private: false
   become: true
   roles:
     - nginx
