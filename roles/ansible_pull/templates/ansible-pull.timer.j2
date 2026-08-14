@@ -1,0 +1,15 @@
+{{ ansible_managed | comment }}
+[Unit]
+Description=Schedule ansible-pull
+
+[Timer]
+OnCalendar={{ pull_schedule }}
+
+# Catch up a run missed while the host was down.
+Persistent=true
+
+# Stagger across hosts so they don't all hit the git remote at once.
+RandomizedDelaySec={{ pull_splay }}
+
+[Install]
+WantedBy=timers.target

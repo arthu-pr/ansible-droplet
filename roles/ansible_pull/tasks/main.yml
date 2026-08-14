@@ -1,0 +1,60 @@
+---
+# ansible-pull inverts the usual direction: instead of a control machine
+# reaching out over SSH, each host clones the repo itself and runs the
+# playbook locally against itself. Nothing needs to connect *in*, so no
+# credentials leave this host.
+- name: Install ansible-core and git
+  ansible.builtin.apt:
+    name:
+      - ansible-core
+      - git
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+
+- name: Create checkout directory
+  ansible.builtin.file:
+    path: '{{ pull_dir }}'
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  become: true
+
+- name: Install ansible-pull run script
+  ansible.builtin.template:
+    src: ansible-pull-run.sh.j2
+    dest: '{{ pull_run_script }}'
+    owner: root
+    group: root
+    mode: '0755'
+  become: true
+
+- name: Install ansible-pull service unit
+  ansible.builtin.template:
+    src: ansible-pull.service.j2
+    dest: /etc/systemd/system/ansible-pull.service
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify: Reload systemd
+
+- name: Install ansible-pull timer unit
+  ansible.builtin.template:
+    src: ansible-pull.timer.j2
+    dest: /etc/systemd/system/ansible-pull.timer
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify: Reload systemd
+
+- name: Enable ansible-pull timer
+  ansible.builtin.systemd_service:
+    name: ansible-pull.timer
+    enabled: true
+    state: started
+    daemon_reload: true
+  become: true

@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+{{ ansible_managed | comment }}
+set -uo pipefail
+
+common_args=(
+  --url {{ pull_repo }}
+  --checkout {{ pull_checkout }}
+  --directory {{ pull_dir }}
+  --inventory localhost,
+  --extra-vars setupHosts=localhost
+)
+
+# Dry run first: a promoted commit that doesn't even validate (bad syntax,
+# undefined var, broken role) stops here instead of touching the real
+# system. Only {{ pull_checkout }} is ever pulled, never the moving default
+# branch, so nothing lands here until it's been deliberately fast-forwarded.
+if ! ansible-pull "${common_args[@]}" --check {{ pull_playbook }}; then
+  echo "ansible-pull --check failed; not applying" >&2
+  exit 1
+fi
+
+ansible-pull "${common_args[@]}" {{ pull_playbook }}
+exit_code=$?
+
+# A real reboot can kill this process mid-run: with a local connection there
+# is no separate control node left alive to observe a clean exit. Exit 1
+# immediately after a run that reached the reboot task is expected, not a
+# failure worth alerting on.
+if [ "$exit_code" -eq 0 ] || [ "$exit_code" -eq 1 ]; then
+  exit 0
+fi
+exit "$exit_code"

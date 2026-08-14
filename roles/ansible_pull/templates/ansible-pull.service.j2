@@ -1,0 +1,10 @@
+{{ ansible_managed | comment }}
+[Unit]
+Description=Run ansible-pull against {{ pull_repo }} ({{ pull_checkout }})
+Documentation=https://docs.ansible.com/ansible/latest/cli/ansible-pull.html
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart={{ pull_run_script }}

@@ -1,0 +1,27 @@
+---
+# Configures a host to update *itself* on a schedule via ansible-pull, so no
+# control machine (and no inbound SSH credential) is involved in routine
+# maintenance. Run this once per host; after that the host is self-sufficient.
+- name: Configure ansible-pull for unattended updates
+  hosts: '{{ setupHosts }}'
+  vars_prompt:
+    - name: setupHosts
+      prompt: Which hosts would you like to use?
+      private: false
+
+  vars:
+    # Must be a public HTTPS URL: the host clones this itself and has no
+    # deploy key. Anything private would need credentials on every host.
+    pull_repo: https://github.com/arthu-pr/ansible-droplet.git
+    # Pinned deliberately, not `main`. A commit only reaches this host once
+    # `deploy` is fast-forwarded to include it -- so `main` stays free for
+    # WIP/tutorial commits without them going live automatically.
+    pull_checkout: deploy
+    pull_dir: /opt/ansible-pull
+    pull_run_script: /usr/local/sbin/ansible-pull-run
+    pull_playbook: projects/common/update_reboot_check.yml
+    pull_schedule: '*-*-* 04:00:00'
+    pull_splay: 30m
+
+  roles:
+    - ansible_pull
