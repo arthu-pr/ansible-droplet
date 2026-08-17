@@ -63,6 +63,11 @@
   ignore_errors: true
   changed_when: false
 
+- name: Display swap usage
+  ansible.builtin.debug:
+    msg: '{{ monitoring_swap_usage.stdout_lines }}'
+  changed_when: false
+
 - name: Check swap usage
   ansible.builtin.shell: |
     set -o pipefail
@@ -70,12 +75,12 @@
   register: monitoring_swap_usage_2
   args:
     executable: /bin/bash
-  changed_when: false
+  changed_when: monitoring_swap_usage_2.stdout_lines | length == 0
 
 - name: Display swap usage
   ansible.builtin.debug:
-    msg: '{{ swap_usage.stdout_lines }}'
-  changed_when: false
+    msg: '{{ monitoring_swap_usage_2.stdout_lines }}'
+  changed_when: monitoring_swap_usage_2.stdout_lines | length > 0
 
 - name: Display System Metrics
   ansible.builtin.debug:
