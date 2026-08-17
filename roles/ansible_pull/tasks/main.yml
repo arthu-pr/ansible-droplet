@@ -22,6 +22,15 @@
     mode: '0755'
   become: true
 
+- name: Create run script directory
+  ansible.builtin.file:
+    path: '{{ pull_run_script | dirname }}'
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  become: true
+
 - name: Install ansible-pull run script
   ansible.builtin.template:
     src: ansible-pull-run.sh.j2
