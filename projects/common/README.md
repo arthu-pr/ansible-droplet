@@ -67,9 +67,42 @@ do several at once.
 
 ### Scheduled run
 
+Two ways to automate this, with different tradeoffs.
+
+#### Recommended: ansible-pull (self-updating)
+
+Each host clones this repo and runs the playbook against *itself* on a systemd timer — no
+control machine, no inbound SSH credential, no dependency on any one machine being on and
+online.
+
+```bash
+ansible-playbook -i ~/.ansible/hosts.yml -e "@~/.ansible/secrets.yml" --vault-password-file ~/.ansible/vault_pass_file -e "setupHosts=<host>" projects/common/setup_ansible_pull.yml
+```
+
+Run once per host — after that it's self-sufficient. It installs `roles/ansible_pull`, which
+dry-runs (`--check`) before ever applying for real, so a broken commit fails loud in the host's
+own journal (`journalctl -u ansible-pull.service`) instead of touching the live system.
+
+> [!IMPORTANT]
+> `pull_repo` in `setup_ansible_pull.yml` defaults to the author's repo. If you're running your
+> own fork, override it — otherwise your hosts pull *this* repo, not yours:
+> `-e pull_repo=https://github.com/<you>/ansible-droplet.git`
+
+**It never tracks `main` directly** — it's pinned to a `deploy` ref (`pull_checkout`), so
+ordinary commits don't reach production until deliberately promoted:
+
+```bash
+git checkout deploy && git merge main && git push
+```
+
+That keeps `main` free for WIP/tutorial commits without them going live automatically. Check a
+host's status any time with `systemctl list-timers ansible-pull.timer`.
+
+#### Alternative: push from a control machine
+
 [`run_update_reboot_check.sh`](run_update_reboot_check.sh) runs the same playbook with no
-prompt and appends to a log. Every path is overridable, so it works outside the author's
-setup:
+prompt and appends to a log, driven by cron or a systemd timer on whichever machine you run it
+from. Every path is overridable:
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
@@ -79,8 +112,6 @@ setup:
 | `TARGET_HOSTS` | `all` | Host or group to target |
 | `RUN_TIMEOUT` | `30m` | Hard limit; a hung run is logged as `TIMED OUT` rather than blocking forever |
 | `LOG_FILE` | `~/.ansible/logs/update_reboot_check.log` | Append target |
-
-Invoke it from cron (`crontab -e`) or a systemd timer:
 
 ```cron
 0 16 * * * /path/to/ansible-droplet/projects/common/run_update_reboot_check.sh
@@ -95,3 +126,7 @@ To pin it to one group instead of the whole inventory:
 Unattended runs authenticate without an `ssh-agent`, so the inventory must point at a
 private key file (`ansible_ssh_private_key_file`) — an agent-only key works interactively
 but fails under cron with `Permission denied (publickey)`.
+
+Worth it if you want one place to see every host's status, or a host can't reach GitHub
+directly. The tradeoff is that machine (and its network) becomes a dependency for maintenance
+actually happening — which is the problem ansible-pull avoids.

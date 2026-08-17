@@ -6,14 +6,14 @@ It's meant to be re-usable and easy to understand.
 
 ## Current projects
 
-- Ubuntu Server Setup - [ubuntu_server_setup](https://github.com/arthur-plazanet/ansible-projects/tree/main/projects/ubuntu_server_setup)
+- Ubuntu Server Setup - [ubuntu_server_setup](https://github.com/arthu-pr/ansible-droplet/tree/main/projects/ubuntu_server_setup)
 - Software: install user software:
   - zsh with [prezto](https://github.com/sorin-ionescu/prezto)
   - nvm, Node and PM2
   - [Zellij](https://github.com/zellij-org/zellij) - terminal multiplexer similar to tmux
   - [Neovim](https://github.com/neovim/neovim)
 - Nginx Setup Server Block: to automate the registration of a new domain on a server, with the default configuration on Nginx and Let's Encrypt SSL certificate (not fully working yet)
-- Update packages and reboot if required: just a simple playbook to update packages on your server and reboot if required
+- Update packages and reboot if required: a playbook to update packages on your server and reboot if required — can run from a control machine, or self-hosted per server via `ansible-pull` (see [`projects/common/README.md`](projects/common/README.md))
 
 ## Disclaimer
 
