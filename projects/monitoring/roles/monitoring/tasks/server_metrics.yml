@@ -74,7 +74,7 @@
 
 - name: Display swap usage
   ansible.builtin.debug:
-    msg: '{{ swap_usage.stdout_lines }}'
+    msg: '{{ monitoring_swap_usage.stdout_lines }}'
   changed_when: false
 
 - name: Display System Metrics
