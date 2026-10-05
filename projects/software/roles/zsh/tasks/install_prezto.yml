@@ -27,7 +27,7 @@
   args:
     executable: /bin/zsh
   ignore_errors: true
-  owner: '{{ ansible_user_id }}'
+  # owner: '{{ ansible_user_id }}'
   # Lint
   register: symlink_result
   changed_when: symlink_result.rc != 0

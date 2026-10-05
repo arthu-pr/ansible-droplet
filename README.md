@@ -12,8 +12,10 @@ It's meant to be re-usable and easy to understand.
   - nvm, Node and PM2
   - [Zellij](https://github.com/zellij-org/zellij) - terminal multiplexer similar to tmux
   - [Neovim](https://github.com/neovim/neovim)
-- Nginx Setup Server Block: to automate the registration of a new domain on a server, with the default configuration on Nginx and Let's Encrypt SSL certificate (not fully working yet)
-- Update packages and reboot if required: a playbook to update packages on your server and reboot if required — can run from a control machine, or self-hosted per server via `ansible-pull` (see [`projects/common/README.md`](projects/common/README.md))
+- Nginx Setup Server Block: to automate the registration of a new domain on a server, with the default configuration on Nginx and Let's Encrypt SSL certificate (not fully working yet) — [`projects/nginx_server_block`](projects/nginx_server_block/README.md)
+- Update packages and reboot if required: a playbook to update packages on your server and reboot if required — can run from a control machine, or self-hosted per server via `ansible-pull` — [`projects/update_reboot_check`](projects/update_reboot_check/README.md)
+- ansible-pull: configures a host to update itself on a schedule, no control machine or inbound SSH needed — [`projects/ansible_pull`](projects/ansible_pull/README.md)
+- Disk cleanup: survey and reclaim disk space on a droplet (report/apply/aggressive) — [`projects/disk_cleanup`](projects/disk_cleanup/disk_cleanup.yml)
 
 ## Disclaimer
 

@@ -5,7 +5,7 @@ Opinionated and personal Softwares to install on a fresh Ubuntu server
 ## Steps
 
 - zsh, with Prezto
-- dotfiles - will install my current dotfiles [repository](https://github.com/arthur-plazanet/dotfiles), and run the sync script
+- dotfiles - will install my current dotfiles [repository](https://github.com/arthu-pr/dotfiles), and run the sync script
   - Neovim configuration
   - Zsh configuration
   - Zellij configuration

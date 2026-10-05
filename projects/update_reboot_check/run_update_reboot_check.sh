@@ -33,7 +33,7 @@ args=(-i "$HOSTS_FILE" -e "setupHosts=$TARGET_HOSTS")
   # rather than fail on a broken link (e.g. a path-MTU black hole), so bound
   # the run to keep a bad night from blocking the next scheduled one.
   timeout "$RUN_TIMEOUT" ansible-playbook "${args[@]}" \
-    projects/common/update_reboot_check.yml
+    projects/update_reboot_check/update_reboot_check.yml
   exit_code=$?
   if [ "$exit_code" -eq 124 ]; then
     echo "=== TIMED OUT after $RUN_TIMEOUT: $(date -Iseconds) ==="

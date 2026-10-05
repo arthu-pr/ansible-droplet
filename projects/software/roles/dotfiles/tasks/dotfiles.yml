@@ -1,7 +1,7 @@
 ---
 - name: Clone personal config repo
   ansible.builtin.git:
-    repo: https://github.com/arthur-plazanet/dotfiles
+    repo: https://github.com/arthu-pr/dotfiles
     dest: '{{ ansible_env.HOME }}/config'
     version: main
   when: run_install | default(false)
@@ -22,7 +22,7 @@
 
 - name: Update config files
   ansible.builtin.git:
-    repo: https://github.com/arthur-plazanet/dotfiles
+    repo: https://github.com/arthu-pr/dotfiles
     dest: '{{ ansible_env.HOME }}/config'
     version: main
   when: run_update | default(false)

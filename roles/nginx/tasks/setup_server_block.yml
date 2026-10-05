@@ -59,7 +59,7 @@
   ignore_errors: true
   changed_when: "'Congratulations' in certbot_result.stdout"
 
-- name: Create index.html
+- name: Create a sample index.html file
   ansible.builtin.copy:
     dest: /var/www/{{ domain }}/index.html
     content: |
